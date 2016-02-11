@@ -1,1 +1,1 @@
-# ajax managment system
+# jquery ajax managment system
