@@ -28,7 +28,8 @@
         }
 
         return deferredObject.promise();
-    };
+    }
+    ;
 
     function isFunction(fn) {
         return /^\$?[a-zA-Z._]+$/.test(fn) && eval('typeof ' + fn) === "function";
@@ -39,7 +40,8 @@
         if (thiscontext instanceof jQuery)
             thiscontext = thiscontext[0];
 
-        if (debug) console.log('DEBUG:process postQueueInOrder:' + q);
+        if (debug)
+            console.log('DEBUG:process postQueueInOrder:' + q);
 
         var queue = q.slice();
         if (queue.length === 0)
@@ -48,7 +50,8 @@
         var arg = queue.shift();
         if (isFunction(arg)) {
 
-            if (debug) console.log('DEBUG:execute postQueueInOrder Function:' + arg);
+            if (debug)
+                console.log('DEBUG:execute postQueueInOrder Function:' + arg);
 
             eval(arg).call(thiscontext);
             postQueueInOrder(queue, thiscontext);
@@ -71,7 +74,8 @@
             });
         }
         else {
-            if (debug) console.log('DEBUG: postQueueInOrder not found :' + arg);
+            if (debug)
+                console.log('DEBUG: postQueueInOrder not found :' + arg);
             postQueueInOrder(queue, thiscontext);
         }
     }
@@ -314,7 +318,8 @@
         //onSuccess callback returns data from request
         var _self = this;
 
-        if (debug) console.log('DEBUG process for target:' + posttarget);
+        if (debug)
+            console.log('DEBUG process for target:' + posttarget);
 
         if (posttarget == "_blank") {
             $data['controller'].removeClass('loading');
@@ -323,15 +328,17 @@
             pre = ($c.attr('postactions') !== undefined) ? $c.attr('postactions') : $c.data('postactions');
             if (pre !== undefined) {
 
-                if (debug) console.log('DEBUG:queue postactions:' + pre);
+                if (debug)
+                    console.log('DEBUG:queue postactions:' + pre);
 
                 pre = pre.split(settings['fieldSeparator']);
                 postQueueInOrder(pre, $c);
 
             }
         } else {
-            
-            if (loaderStart !== null) loaderStart(posttarget, $data['action']);
+
+            if (loaderStart !== null)
+                loaderStart(posttarget, $data['action']);
 
             $.ajax({
                 type: 'POST',
@@ -342,7 +349,8 @@
                 async: settings['async'],
                 success: function (data, textStatus, jqXHR) {
                     $data['controller'].removeClass('loading');
-                    if(loaderStop!=null) loaderStop(posttarget,$data['controller']);
+                    if (loaderStop != null)
+                        loaderStop(posttarget, $data['controller']);
 
                     var ct = jqXHR.getResponseHeader("content-type") || "";
                     if (ct.indexOf('json') > -1) {
@@ -351,7 +359,7 @@
                     else {
                         settings.onSuccess.call(_self, data);
                     }
-                    
+
                     //postactions
                     $c = $data['action'];
                     pre = ($c.attr('postactions') !== undefined) ? $c.attr('postactions') : $c.data('postactions');
@@ -367,8 +375,8 @@
                     $data['controller'].removeClass('loading');
                     console.error(e);
                 },
-                complete:function(){
-                    
+                complete: function () {
+
                 }
             });
         }
@@ -489,6 +497,8 @@
             var w = window.open();
             w.document.write(mod);
             w.document.close();
+
+            return this;
         }
         // else if(eval("typeof " + renderer) === "function")  {
         //     if (loaderStop != null) loaderStop();
@@ -498,7 +508,8 @@
         else if (typeof window[renderer] === "function") {
             // if (loaderStop != null)
             //     loaderStop();
-            if (debug) console.log('DEBUG:renderer calls:' + renderer);
+            if (debug)
+                console.log('DEBUG:renderer calls:' + renderer);
 
             window[renderer].call(this, mod);
             return this;
@@ -516,33 +527,32 @@
         if (settings['json']) {
             template = (action.attr('template') !== undefined) ? action.attr('template') : action.data('template');
             prop = (action.attr('json-selector') !== undefined) ? action.attr('json-selector') : action.data('jsonSelector');
-            form = (action.attr('form') !== undefined) ? action.attr('form') : action.data('form');
+            form = $(renderer)[0];
 
             data = mod;
 
-            if (prop){
+            if (prop) {
                 var props = prop.split('.');
-                for (var i = 0; i < props.length; i++) { 
-                    if(data[props[i]]){
+                for (var i = 0; i < props.length; i++) {
+                    if (data[props[i]]) {
                         data = data[props[i]];
                     }
-                    else{
-                         data = mod;
-                         break;
+                    else {
+                        data = mod;
+                        break;
                     }
                 }
-                
-            }
 
+            }
 
             if (!$.templates || template === undefined || $(template).length === 0)
             {
 
-                if(form !== undefined || $(form).length !== 0){
-                    $('[name],[data-name]',form).each(function(){
+                if (form !== undefined || $(form).length !== 0) {
+                    $('[name],[data-name]', form).each(function () {
                         var v = ($(this).attr('name') !== undefined) ? $(this).attr('name') : $(this).data('name');
-                        if(data[v]){
-                            if( this.tagName === 'DIV' || this.tagName === 'SPAN')
+                        if (data[v]) {
+                            if (this.tagName === 'DIV' || this.tagName === 'SPAN')
                                 $(this).text(data[v]);
                             else
                                 $(this).val(data[v]);
@@ -553,32 +563,33 @@
                 return this;
             }
 
-            var templateSrc = $(template).attr('src');
+            var templateSrc = ($(template).attr('src') !== undefined) ? $(template).attr('src') : $(template).data('src');
             if (templateSrc !== undefined) {
                 console.log("todo");
-                // $.ajax({
-                //     url: templateSrc,
+                $.ajax({
+                    url : templateSrc,
                 //     //cache: true,
-                //     success: function(data){
+                    success: function(data){
                 //         _renderer();
                 //         console.log("ajax2");
                 //         console.log(data);
                 //         // template = $.templates({ tmpl: tmplData });
                 //         // htmlOutput = template.render(data);
 
-                //         // newObj = $(renderer).replaceWithMod(htmlOutput);
+                        $(template).replaceWithMod(data);
                 //         // if (loaderStop != null) loaderStop(renderer);
                 //         // settings.onSuccess.call(newObj);
                 //         // $.resizecalls();
                 //         // $(newObj).autoAjaxify();
-                //   }
-                // });
+                  }
+                });
                 // // $.when($.get(templateSrc))
                 // //     .done(function(tmplData) {
                 // //         console.log(tmplData);
                 // //     });
             }
-            else if(data.object.html !== undefined){
+            
+            if (data.object !== undefined && data.object.html !== undefined) {
                 htmlOutput = data.object.html;
                 _render();
             }
@@ -722,20 +733,24 @@
                     $action = $(this);
                     act = ($action.attr('action') !== undefined) ? $action.attr('action') : $action.data('action');
 
-                    if (debug)  console.log('TRIGGER:' + act + ">" + event.target);
+                    if (debug)
+                        console.log('TRIGGER:' + act + ">" + event.target);
 
                     event.preventDefault();
                     $target = $(this);
 
                     if (isFunction(act)) {
-                        if (debug) console.log('Trigger funcion by actuin:' + act);
+                        if (debug)
+                            console.log('Trigger funcion by actuin:' + act);
                         eval(act).call(this); //if the function does not exists it creates a rat reload loop FIXIT
                     } else
                         _confirm.call(this).done(function () {
-                            if (debug) console.log('Confiramtions are good:' + $target.attr('id'));
+                            if (debug)
+                                console.log('Confiramtions are good:' + $target.attr('id'));
                             $target.postit();
                         }).fail(function () {
-                            if (debug) console.log('FAILED confirmation:' + $target.attr('id'));
+                            if (debug)
+                                console.log('FAILED confirmation:' + $target.attr('id'));
                             // loaderStop();
                         });
                 });
